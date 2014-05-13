@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<tryton>
+    <data>
+
+        <record model="ir.action.wizard" id="wizard_shipment_external_assign">
+            <field name="name">Assign Shipment External</field>
+            <field name="wiz_name">stock.shipment.external.assign</field>
+            <field name="model">stock.shipment.external</field>
+        </record>
+
+        <record model="ir.ui.view" id="shipment_external_view_form">
+            <field name="model">stock.shipment.external</field>
+            <field name="type">form</field>
+            <field name="name">shipment_external_form</field>
+        </record>
+        <record model="ir.ui.view" id="shipment_external_view_tree">
+            <field name="model">stock.shipment.external</field>
+            <field name="type">tree</field>
+            <field name="name">shipment_external_tree</field>
+        </record>
+        <record model="ir.action.act_window" id="act_shipment_external_form">
+            <field name="name">External Shipments</field>
+            <field name="res_model">stock.shipment.external</field>
+            <field name="search_value"></field>
+        </record>
+        <record model="ir.action.act_window.view"
+                id="act_shipment_external_form_view1">
+            <field name="sequence" eval="1"/>
+            <field name="view" ref="shipment_external_view_tree"/>
+            <field name="act_window" ref="act_shipment_external_form"/>
+        </record>
+        <record model="ir.action.act_window.view"
+                id="act_shipment_external_form_view2">
+            <field name="sequence" eval="2"/>
+            <field name="view" ref="shipment_external_view_form"/>
+            <field name="act_window" ref="act_shipment_external_form"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_shipment_external_form_domain_draft">
+            <field name="name">Draft</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain">[('state', '=', 'draft')]</field>
+            <field name="act_window" ref="act_shipment_external_form"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_shipment_external_form_domain_waiting">
+            <field name="name">Waiting</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain">[('state', '=', 'waiting')]</field>
+            <field name="act_window" ref="act_shipment_external_form"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_shipment_external_form_domain_assigned">
+            <field name="name">Assigned</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain">[('state', '=', 'assigned')]</field>
+            <field name="act_window" ref="act_shipment_external_form"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_shipment_external_form_domain_all">
+            <field name="name">All</field>
+            <field name="sequence" eval="9999"/>
+            <field name="domain"></field>
+            <field name="act_window" ref="act_shipment_external_form"/>
+        </record>
+        <menuitem parent="stock.menu_stock" sequence="38"
+                  action="act_shipment_external_form"
+                  id="menu_shipment_external_form"/>
+
+        <record model="ir.ui.view" id="shipment_external_assign_failed_view_form">
+            <field name="model">stock.shipment.external.assign.failed</field>
+            <field name="type">form</field>
+            <field name="name">shipment_external_assign_failed_form</field>
+        </record>
+
+        <record model="ir.sequence.type" id="sequence_type_shipment_external">
+            <field name="name">External Shipment</field>
+            <field name="code">stock.shipment.external</field>
+        </record>
+        <record model="ir.sequence.type-res.group"
+            id="sequence_type_shipment_external_group_admin">
+            <field name="sequence_type" ref="sequence_type_shipment_external"/>
+            <field name="group" ref="res.group_admin"/>
+        </record>
+        <record model="ir.sequence.type-res.group"
+            id="sequence_type_shipment_external_stock_group_stock_admin">
+            <field name="sequence_type" ref="sequence_type_shipment_external"/>
+            <field name="group" ref="stock.group_stock_admin"/>
+        </record>
+
+        <record model="ir.sequence" id="sequence_shipment_external">
+                <field name="name">External Shipment</field>
+                <field name="code">stock.shipment.external</field>
+        </record>
+
+        <record model="ir.property" id="property_shipment_external_sequence">
+            <field name="field"
+                search="[('model.model', '=', 'stock.configuration'), ('name', '=', 'shipment_external_sequence')]"/>
+            <field name="value" eval="'ir.sequence,' + str(ref('sequence_shipment_external'))"/>
+        </record>
+
+        <record model="ir.model.access" id="access_shipment_external">
+            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access"
+                id="access_shipment_external_stock_group_stock">
+            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="group" ref="stock.group_stock"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access"
+                id="access_shipment_external_stock_group_stock_admin">
+            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="group" ref="stock.group_stock_admin"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_external_cancel_button">
+            <field name="name">cancel</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.external')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_external_cancel_button_stock_group_stock">
+            <field name="button" ref="shipment_external_cancel_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_external_draft_button">
+            <field name="name">draft</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.external')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_external_draft_button_stock_group_stock">
+            <field name="button" ref="shipment_external_draft_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_external_wait_button">
+            <field name="name">wait</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.external')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_external_wait_button_stock_group_stock">
+            <field name="button" ref="shipment_external_wait_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_external_done_button">
+            <field name="name">done</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.external')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_external_done_button_stock_group_stock">
+            <field name="button" ref="shipment_external_done_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_external_assign_try_button">
+            <field name="name">assign_try</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.external')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_external_assign_try_button_stock_group_stock">
+            <field name="button" ref="shipment_external_assign_try_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_external_assign_force_button">
+            <field name="name">assign_force</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.external')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_external_assign_force_button_stock_group_stock_force_assignment">
+            <field name="button" ref="shipment_external_assign_force_button"/>
+            <field name="group" ref="stock.group_stock_force_assignment"/>
+        </record>
+        <record model="ir.rule.group" id="rule_group_shipment_external">
+            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="global_p" eval="True"/>
+        </record>
+        <record model="ir.rule" id="rule_shipment_external">
+            <field name="domain">[('company', '=', user.company.id if user.company else None)]</field>
+            <field name="rule_group" ref="rule_group_shipment_external"/>
+        </record>
+
+    </data>
+</tryton>

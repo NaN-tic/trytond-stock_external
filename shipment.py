@@ -1,0 +1,348 @@
+#The COPYRIGHT file at the top level of this repository contains the full
+#copyright notices and license terms.
+from trytond.model import Workflow, ModelSQL, ModelView, fields
+from trytond.pyson import Eval, If, In, Or, Not, Equal, Bool, Id
+from trytond.pool import Pool, PoolMeta
+from trytond.transaction import Transaction
+from trytond.wizard import Wizard, StateTransition, StateView, Button
+
+__all__ = ['Configuration', 'ShipmentExternal', 'Move',
+    'AssignShipmentExternalAssignFailed', 'AssignShipmentExternal']
+__metaclass__ = PoolMeta
+
+
+class Configuration:
+    __name__ = 'stock.configuration'
+    shipment_external_sequence = fields.Property(fields.Many2One(
+            'ir.sequence', 'External Shipment Sequence', domain=[
+                ('company', 'in',
+                    [Eval('context', {}).get('company', -1), None]),
+                ('code', '=', 'stock.shipment.external'),
+                ], required=True))
+
+
+class ShipmentExternal(Workflow, ModelSQL, ModelView):
+    "External Shipment"
+    __name__ = 'stock.shipment.external'
+    _rec_name = 'code'
+    effective_date = fields.Date('Effective Date',
+        states={
+            'readonly': Eval('state').in_(['cancel', 'done']),
+            },
+        depends=['state'])
+    planned_date = fields.Date('Planned Date',
+        states={
+            'readonly': Eval('state') != 'draft',
+            },
+        depends=['state'])
+    company = fields.Many2One('company.company', 'Company', required=True,
+        states={
+            'readonly': Eval('state') != 'draft',
+            },
+        domain=[
+            ('id', If(In('company', Eval('context', {})), '=', '!='),
+                Eval('context', {}).get('company', -1)),
+            ],
+        depends=['state'])
+    code = fields.Char("Code", size=None, select=True, readonly=True)
+    party = fields.Many2One('party.party', 'Party', required=True,
+        states={
+            'readonly': Or(Not(Equal(Eval('state'), 'draft')),
+                Bool(Eval('moves', [0]))),
+            },
+        depends=['state'], on_change=['party'])
+    address = fields.Many2One('party.address', 'Contact Address',
+        states={
+            'readonly': Not(Equal(Eval('state'), 'draft')),
+            }, domain=[('party', '=', Eval('party'))],
+        depends=['state', 'party'])
+    reference = fields.Char("Reference", size=None, select=True,
+        states={
+            'readonly': Eval('state') != 'draft',
+            }, depends=['state'])
+    from_location = fields.Many2One('stock.location', "From Location",
+        required=True, states={
+            'readonly': Or(Not(Equal(Eval('state'), 'draft')),
+                Bool(Eval('moves', [0]))),
+            },
+        domain=[
+            ('type', 'in', ['storage', 'customer', 'supplier']),
+            ], depends=['state'])
+    from_location_type = fields.Function(fields.Char('From Location Type',
+        on_change_with=['from_location']), 'on_change_with_from_location_type')
+    to_location = fields.Many2One('stock.location', "To Location",
+        required=True, states={
+            'readonly': Or(Not(Equal(Eval('state'), 'draft')),
+                Bool(Eval('moves', [0]))),
+            }, domain=[
+            If((Eval('from_location_type', '') == 'storage'),
+                (('type', 'in', ['customer', 'supplier']),),
+                (('type', '=', 'storage'),)
+                ),
+            ], depends=['from_location_type'])
+    moves = fields.One2Many('stock.move', 'shipment', 'Moves',
+        states={
+            'readonly': ((Eval('state') != 'draft')
+                | ~Eval('from_location') | ~Eval('to_location')),
+            },
+        domain=[
+            ('from_location', '=', Eval('from_location')),
+            ('to_location', '=', Eval('to_location')),
+            ('company', '=', Eval('company')),
+            ],
+        depends=['state', 'from_location', 'to_location', 'planned_date',
+            'company'])
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('cancel', 'Canceled'),
+        ('assigned', 'Assigned'),
+        ('waiting', 'Waiting'),
+        ('done', 'Done'),
+        ], 'State', readonly=True)
+
+    @classmethod
+    def __setup__(cls):
+        super(ShipmentExternal, cls).__setup__()
+        cls._order[0] = ('id', 'DESC')
+        cls._error_messages.update({
+                'delete_cancel': ('External Shipment "%s" must be cancelled '
+                    'before deletion.'),
+                'same_from_to_type': ('The locations types of shipment "%s"'
+                    ' can not be the same.'),
+                'internal_shipments': ('All locations of shipment "%s" are '
+                    'from type storage. Use internal shimpents to track '
+                    'internal movements.'),
+                'one_storage_location': ('At least one of the the locations '
+                    'of shipment "%s" must be of storage type.'),
+                })
+        cls._transitions |= set((
+                ('draft', 'waiting'),
+                ('waiting', 'waiting'),
+                ('waiting', 'assigned'),
+                ('assigned', 'done'),
+                ('waiting', 'draft'),
+                ('assigned', 'waiting'),
+                ('draft', 'cancel'),
+                ('waiting', 'cancel'),
+                ('assigned', 'cancel'),
+                ('cancel', 'draft'),
+                ))
+        cls._buttons.update({
+                'cancel': {
+                    'invisible': Eval('state').in_(['cancel', 'done']),
+                    },
+                'draft': {
+                    'invisible': ~Eval('state').in_(['cancel', 'waiting']),
+                    'icon': If(Eval('state') == 'cancel',
+                        'tryton-clear',
+                        'tryton-go-previous'),
+                    },
+                'wait': {
+                    'invisible': ~Eval('state').in_(['assigned', 'waiting',
+                            'draft']),
+                    'icon': If(Eval('state') == 'assigned',
+                        'tryton-go-previous',
+                        If(Eval('state') == 'waiting',
+                            'tryton-clear',
+                            'tryton-go-next')),
+                    },
+                'done': {
+                    'invisible': Eval('state') != 'assigned',
+                    },
+                'assign_wizard': {
+                    'invisible': Eval('state') != 'waiting',
+                    'readonly': ~Eval('groups', []).contains(
+                        Id('stock', 'group_stock')),
+                    },
+                'assign_try': {},
+                'assign_force': {},
+                })
+
+    @staticmethod
+    def default_state():
+        return 'draft'
+
+    @staticmethod
+    def default_company():
+        return Transaction().context.get('company')
+
+    def on_change_party(self):
+        address = None
+        if self.party:
+            address = self.party.address_get(type='delivery')
+        return {'address': address.id if address else None}
+
+    def on_change_with_from_location_type(self, name=None):
+        return self.from_location.type if self.from_location else ''
+
+    @classmethod
+    def validate(cls, shipments):
+        super(ShipmentExternal, cls).validate(shipments)
+        for shipment in shipments:
+            shipment.check_locations()
+
+    def check_locations(self):
+        from_type = self.from_location.type
+        to_type = self.to_location.type
+        if from_type == 'storage' and to_type == 'storage':
+            self.raise_user_error('internal_shipments', self.rec_name)
+        if from_type == to_type:
+            self.raise_user_error('same_from_to_type', self.rec_name)
+        if from_type != 'storage' and to_type != 'storage':
+            self.raise_user_error('one_storage_required', self.rec_name)
+
+    @classmethod
+    def create(cls, vlist):
+        pool = Pool()
+        Sequence = pool.get('ir.sequence')
+        Config = pool.get('stock.configuration')
+
+        vlist = [x.copy() for x in vlist]
+        config = Config(1)
+        for values in vlist:
+            values['code'] = Sequence.get_id(
+                    config.shipment_external_sequence.id)
+        return super(ShipmentExternal, cls).create(vlist)
+
+    @classmethod
+    def delete(cls, shipments):
+        Move = Pool().get('stock.move')
+        # Cancel before delete
+        cls.cancel(shipments)
+        for shipment in shipments:
+            if shipment.state != 'cancel':
+                cls.raise_user_error('delete_cancel', shipment.rec_name)
+        Move.delete([m for s in shipments for m in s.moves])
+        super(ShipmentExternal, cls).delete(shipments)
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('draft')
+    def draft(cls, shipments):
+        Move = Pool().get('stock.move')
+        Move.draft([m for s in shipments for m in s.moves])
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('waiting')
+    def wait(cls, shipments):
+        Move = Pool().get('stock.move')
+        # First reset state to draft to allow update from and to location
+        Move.draft([m for s in shipments for m in s.moves])
+        for shipment in shipments:
+            Move.write([m for m in shipment.moves
+                    if m.state != 'done'], {
+                    'from_location': shipment.from_location.id,
+                    'to_location': shipment.to_location.id,
+                    'planned_date': shipment.planned_date,
+                    })
+
+    @classmethod
+    @Workflow.transition('assigned')
+    def assign(cls, shipments):
+        pass
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('done')
+    def done(cls, shipments):
+        pool = Pool()
+        Move = pool.get('stock.move')
+        Date = pool.get('ir.date')
+        Move.do([m for s in shipments for m in s.moves])
+        cls.write([s for s in shipments if not s.effective_date], {
+                'effective_date': Date.today(),
+                })
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('cancel')
+    def cancel(cls, shipments):
+        Move = Pool().get('stock.move')
+        Move.cancel([m for s in shipments for m in s.moves])
+
+    @classmethod
+    @ModelView.button_action('stock.wizard_shipment_internal_assign')
+    def assign_wizard(cls, shipments):
+        pass
+
+    @classmethod
+    @ModelView.button
+    def assign_try(cls, shipments):
+        Move = Pool().get('stock.move')
+        to_assign = [s for s in shipments if s.from_location.type == 'storage']
+        if not to_assign:
+            cls.assign(shipments)
+            return True
+        if Move.assign_try([m for s in to_assign
+                    for m in s.moves]):
+            cls.assign(shipments)
+            return True
+        else:
+            return False
+
+    @classmethod
+    @ModelView.button
+    def assign_force(cls, shipments):
+        Move = Pool().get('stock.move')
+        Move.assign([m for s in shipments for m in s.moves])
+        cls.assign(shipments)
+
+
+class AssignShipmentExternalAssignFailed(ModelView):
+    'Assign Shipment External'
+    __name__ = 'stock.shipment.external.assign.failed'
+    moves = fields.Many2Many('stock.move', None, None, 'Moves',
+        readonly=True)
+
+    @staticmethod
+    def default_moves():
+        ShipmentExternal = Pool().get('stock.shipment.external')
+        shipment_id = Transaction().context.get('active_id')
+        if not shipment_id:
+            return []
+        shipment = ShipmentExternal(shipment_id)
+        return [x.id for x in shipment.moves if x.state == 'draft']
+
+
+class AssignShipmentExternal(Wizard):
+    'Assign Shipment External'
+    __name__ = 'stock.shipment.external.assign'
+    start = StateTransition()
+    failed = StateView('stock.shipment.external.assign.failed',
+        'stock_external_shipment.shipment_external_assign_failed_view_form',
+        [
+            Button('Force Assign', 'force', 'tryton-go-next',
+                states={
+                    'invisible': ~Id('stock',
+                        'group_stock_force_assignment').in_(
+                        Eval('context', {}).get('groups', [])),
+                    }),
+            Button('Ok', 'end', 'tryton-ok', True),
+            ])
+    force = StateTransition()
+
+    def transition_start(self):
+        pool = Pool()
+        Shipment = pool.get('stock.shipment.external')
+
+        if Shipment.assign_try([Shipment(Transaction().context['active_id'])]):
+            return 'end'
+        else:
+            return 'failed'
+
+    def transition_force(self):
+        Shipment = Pool().get('stock.shipment.external')
+
+        Shipment.assign_force([Shipment(Transaction().context['active_id'])])
+        return 'end'
+
+
+class Move:
+    __name__ = 'stock.move'
+
+    @classmethod
+    def _get_shipment(cls):
+        models = super(Move, cls)._get_shipment()
+        models.append('stock.shipment.external')
+        return models

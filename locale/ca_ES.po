@@ -1,0 +1,219 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:stock.shipment.external:"
+msgid ""
+"All locations of shipment \"%s\" are from type storage. Use internal "
+"shimpents to track internal movements."
+msgstr ""
+"La ubicació origen i destí de l'albará \"%s\" són de tipus intern. Feu "
+"servir els albarans interns per movimients entre ubicacions internes."
+
+msgctxt "error:stock.shipment.external:"
+msgid ""
+"At least one of the the locations of shipment \"%s\" must be of storage "
+"type."
+msgstr "Alguna de les ubicacions de l'albarà \"%s\" ha de ser de tipus intern."
+
+msgctxt "error:stock.shipment.external:"
+msgid "External Shipment \"%s\" must be cancelled before deletion."
+msgstr "Heu de cancel·lar l'albarà extern \"%s\" abans de poder-lo eliminar."
+
+msgctxt "error:stock.shipment.external:"
+msgid "The locations types of shipment \"%s\" can not be the same."
+msgstr ""
+"Les ubicacions origen i destí de l'albarà extern \"%s\" no poden ser del "
+"mateix tipus."
+
+msgctxt "field:stock.configuration,shipment_external_sequence:"
+msgid "External Shipment Sequence"
+msgstr "Secuencia albarans externs"
+
+msgctxt "field:stock.shipment.external,address:"
+msgid "Contact Address"
+msgstr "Adreça de contacte"
+
+msgctxt "field:stock.shipment.external,code:"
+msgid "Code"
+msgstr "Codi"
+
+msgctxt "field:stock.shipment.external,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:stock.shipment.external,create_date:"
+msgid "Create Date"
+msgstr "Data de creació"
+
+msgctxt "field:stock.shipment.external,create_uid:"
+msgid "Create User"
+msgstr "Usuari de creació"
+
+msgctxt "field:stock.shipment.external,effective_date:"
+msgid "Effective Date"
+msgstr "Data efectiva"
+
+msgctxt "field:stock.shipment.external,from_location:"
+msgid "From Location"
+msgstr "D'ubicació"
+
+msgctxt "field:stock.shipment.external,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:stock.shipment.external,moves:"
+msgid "Moves"
+msgstr "Moviments"
+
+msgctxt "field:stock.shipment.external,party:"
+msgid "Party"
+msgstr "Tercer"
+
+msgctxt "field:stock.shipment.external,planned_date:"
+msgid "Planned Date"
+msgstr "Data estimada"
+
+msgctxt "field:stock.shipment.external,rec_name:"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "field:stock.shipment.external,reference:"
+msgid "Reference"
+msgstr "Referència"
+
+msgctxt "field:stock.shipment.external,state:"
+msgid "State"
+msgstr "Estat compra"
+
+msgctxt "field:stock.shipment.external,to_location:"
+msgid "To Location"
+msgstr "A la ubicació"
+
+msgctxt "field:stock.shipment.external,write_date:"
+msgid "Write Date"
+msgstr "Data modificació"
+
+msgctxt "field:stock.shipment.external,write_uid:"
+msgid "Write User"
+msgstr "Usuari modificació"
+
+msgctxt "field:stock.shipment.external.assign.failed,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:stock.shipment.external.assign.failed,moves:"
+msgid "Moves"
+msgstr "Moviments"
+
+msgctxt "model:ir.action,name:act_shipment_external_form"
+msgid "External Shipments"
+msgstr "Albarans externs"
+
+msgctxt "model:ir.action,name:wizard_shipment_external_assign"
+msgid "Assign Shipment External"
+msgstr "Asigna movimients externs"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_shipment_external_form_domain_all"
+msgid "All"
+msgstr "Tots"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_shipment_external_form_domain_assigned"
+msgid "Assigned"
+msgstr "Assignat"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_shipment_external_form_domain_draft"
+msgid "Draft"
+msgstr "Esborrany"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_shipment_external_form_domain_waiting"
+msgid "Waiting"
+msgstr "Esperant"
+
+msgctxt "model:ir.sequence,name:sequence_shipment_external"
+msgid "External Shipment"
+msgstr "Albarà extern"
+
+msgctxt "model:ir.sequence.type,name:sequence_type_shipment_external"
+msgid "External Shipment"
+msgstr "Albarà extern"
+
+msgctxt "model:ir.ui.menu,name:menu_shipment_external_form"
+msgid "External Shipments"
+msgstr "Albarans externs"
+
+msgctxt "model:stock.shipment.external,name:"
+msgid "External Shipment"
+msgstr "Albarà extern"
+
+msgctxt "model:stock.shipment.external.assign.failed,name:"
+msgid "Assign Shipment External"
+msgstr "Asigna movimients externs"
+
+msgctxt "selection:stock.shipment.external,state:"
+msgid "Assigned"
+msgstr "Assignat"
+
+msgctxt "selection:stock.shipment.external,state:"
+msgid "Canceled"
+msgstr "Cancel·lat"
+
+msgctxt "selection:stock.shipment.external,state:"
+msgid "Done"
+msgstr "Realitzat"
+
+msgctxt "selection:stock.shipment.external,state:"
+msgid "Draft"
+msgstr "Esborrany"
+
+msgctxt "selection:stock.shipment.external,state:"
+msgid "Waiting"
+msgstr "Esperant"
+
+msgctxt "view:stock.shipment.external.assign.failed:"
+msgid "Unable to Assign"
+msgstr "No es pot assignar"
+
+msgctxt "view:stock.shipment.external.assign.failed:"
+msgid "Unable to assign those products:"
+msgstr "No es poden reservar aquests productes:"
+
+msgctxt "view:stock.shipment.external:"
+msgid "Assign"
+msgstr "Assigna"
+
+msgctxt "view:stock.shipment.external:"
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgctxt "view:stock.shipment.external:"
+msgid "Done"
+msgstr "Realitzat"
+
+msgctxt "view:stock.shipment.external:"
+msgid "Draft"
+msgstr "Esborrany"
+
+msgctxt "view:stock.shipment.external:"
+msgid "External Shipment"
+msgstr "Albarà extern"
+
+msgctxt "view:stock.shipment.external:"
+msgid "External Shipments"
+msgstr "Albarans externs"
+
+msgctxt "view:stock.shipment.external:"
+msgid "Waiting"
+msgstr "Esperant"
+
+msgctxt "wizard_button:stock.shipment.external.assign,failed,end:"
+msgid "Ok"
+msgstr "D'acord"
+
+msgctxt "wizard_button:stock.shipment.external.assign,failed,force:"
+msgid "Force Assign"
+msgstr "Forçar reserva"
