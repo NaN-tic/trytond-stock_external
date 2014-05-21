@@ -119,9 +119,15 @@ Recieve products from customer::
     >>> ShipmentExternal.wait([shipment.id], config.context)
     >>> ShipmentExternal.assign_try([shipment.id], config.context)
     True
+    >>> move, = shipment.moves
+    >>> move.state
+    u'assigned'
     >>> ShipmentExternal.done([shipment.id], config.context)
     >>> shipment.reload()
     >>> shipment.state
+    u'done'
+    >>> move, = shipment.moves
+    >>> move.state
     u'done'
     >>> config._context['locations'] = [storage_loc.id]
     >>> product.reload()
@@ -160,9 +166,15 @@ Delete draft move and only available product::
     >>> shipment.save()
     >>> ShipmentExternal.assign_try([shipment.id], config.context)
     True
+    >>> move, = shipment.moves
+    >>> move.state
+    u'assigned'
     >>> ShipmentExternal.done([shipment.id], config.context)
     >>> shipment.reload()
     >>> shipment.state
+    u'done'
+    >>> move, = shipment.moves
+    >>> move.state
     u'done'
     >>> config._context['locations'] = [storage_loc.id]
     >>> product.reload()

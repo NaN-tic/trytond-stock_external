@@ -262,7 +262,8 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         Move.cancel([m for s in shipments for m in s.moves])
 
     @classmethod
-    @ModelView.button_action('stock.wizard_shipment_internal_assign')
+    @ModelView.button_action(
+        'stock_external_shipment.wizard_shipment_external_assign')
     def assign_wizard(cls, shipments):
         pass
 
@@ -272,6 +273,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         Move = Pool().get('stock.move')
         to_assign = [s for s in shipments if s.from_location.type == 'storage']
         if not to_assign:
+            Move.assign([m for s in shipments for m in s.moves])
             cls.assign(shipments)
             return True
         if Move.assign_try([m for s in to_assign
