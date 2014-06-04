@@ -1,19 +1,11 @@
 #!/usr/bin/env python
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-import sys
-import os
-DIR = os.path.abspath(os.path.normpath(os.path.join(__file__,
-    '..', '..', '..', '..', '..', 'trytond')))
-if os.path.isdir(DIR):
-    sys.path.insert(0, os.path.dirname(DIR))
-
 import unittest
 import doctest
 import trytond.tests.test_tryton
-from trytond.tests.test_tryton import test_view, test_depends
+from trytond.tests.test_tryton import test_view, test_depends, doctest_dropdb
 from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT
-from trytond.backend.sqlite.database import Database as SQLiteDatabase
 from trytond.transaction import Transaction
 
 
@@ -43,7 +35,9 @@ class TestCase(unittest.TestCase):
             supplier, = self.location.search([('code', '=', 'SUP')])
             customer, = self.location.search([('code', '=', 'CUS')])
             storage, = self.location.search([('code', '=', 'STO')])
-            company, = self.company.search([('rec_name', '=', 'B2CK')])
+            company, = self.company.search([
+                    ('rec_name', '=', 'Dunder Mifflin'),
+                    ])
             self.user.write([self.user(USER)], {
                 'main_company': company.id,
                 'company': company.id,
@@ -70,16 +64,6 @@ class TestCase(unittest.TestCase):
                             }])
 
 
-def doctest_dropdb(test):
-    database = SQLiteDatabase().connect()
-    cursor = database.cursor(autocommit=True)
-    try:
-        database.drop(cursor, ':memory:')
-        cursor.commit()
-    finally:
-        cursor.close()
-
-
 def suite():
     suite = trytond.tests.test_tryton.suite()
     from trytond.modules.company.tests import test_company
@@ -92,6 +76,3 @@ def suite():
             setUp=doctest_dropdb, tearDown=doctest_dropdb, encoding='utf-8',
             optionflags=doctest.REPORT_ONLY_FIRST_FAILURE))
     return suite
-
-if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite())

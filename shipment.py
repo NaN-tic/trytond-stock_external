@@ -50,7 +50,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             'readonly': Or(Not(Equal(Eval('state'), 'draft')),
                 Bool(Eval('moves', [0]))),
             },
-        depends=['state'], on_change=['party'])
+        depends=['state'])
     address = fields.Many2One('party.address', 'Contact Address',
         states={
             'readonly': Not(Equal(Eval('state'), 'draft')),
@@ -68,8 +68,8 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         domain=[
             ('type', 'in', ['storage', 'customer', 'supplier']),
             ], depends=['state'])
-    from_location_type = fields.Function(fields.Char('From Location Type',
-        on_change_with=['from_location']), 'on_change_with_from_location_type')
+    from_location_type = fields.Function(fields.Char('From Location Type'),
+        'on_change_with_from_location_type')
     to_location = fields.Many2One('stock.location', "To Location",
         required=True, states={
             'readonly': Or(Not(Equal(Eval('state'), 'draft')),
@@ -166,12 +166,14 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
     def default_company():
         return Transaction().context.get('company')
 
+    @fields.depends('party')
     def on_change_party(self):
         address = None
         if self.party:
             address = self.party.address_get(type='delivery')
         return {'address': address.id if address else None}
 
+    @fields.depends('from_location')
     def on_change_with_from_location_type(self, name=None):
         return self.from_location.type if self.from_location else ''
 
