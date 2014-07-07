@@ -10,7 +10,7 @@ def register():
         ShipmentExternal,
         Move,
         AssignShipmentExternalAssignFailed,
-        module='stock_external_shipment', type_='model')
+        module='stock_external', type_='model')
     Pool.register(
         AssignShipmentExternal,
-        module='stock_external_shipment', type_='wizard')
+        module='stock_external', type_='wizard')

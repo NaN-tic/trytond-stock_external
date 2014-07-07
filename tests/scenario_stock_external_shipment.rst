@@ -23,7 +23,7 @@ Create database::
 Install stock Module::
 
     >>> Module = Model.get('ir.module.module')
-    >>> modules = Module.find([('name', '=', 'stock_external_shipment')])
+    >>> modules = Module.find([('name', '=', 'stock_external')])
     >>> Module.install([x.id for x in modules], config.context)
     >>> Wizard('ir.module.module.install_upgrade').execute('upgrade')
 

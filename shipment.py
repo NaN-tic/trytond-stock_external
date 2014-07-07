@@ -1,5 +1,5 @@
-#The COPYRIGHT file at the top level of this repository contains the full
-#copyright notices and license terms.
+# The COPYRIGHT file at the top level of this repository contains the full
+# copyright notices and license terms.
 from trytond.model import Workflow, ModelSQL, ModelView, fields
 from trytond.pyson import Eval, If, In, Or, Not, Equal, Bool, Id
 from trytond.pool import Pool, PoolMeta
@@ -13,8 +13,8 @@ __metaclass__ = PoolMeta
 
 class Configuration:
     __name__ = 'stock.configuration'
-    shipment_external_sequence = fields.Property(fields.Many2One(
-            'ir.sequence', 'External Shipment Sequence', domain=[
+    shipment_external_sequence = fields.Property(fields.Many2One('ir.sequence',
+            'External Shipment Sequence', domain=[
                 ('company', 'in',
                     [Eval('context', {}).get('company', -1), None]),
                 ('code', '=', 'stock.shipment.external'),
@@ -75,10 +75,9 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             'readonly': Or(Not(Equal(Eval('state'), 'draft')),
                 Bool(Eval('moves', [0]))),
             }, domain=[
-            If((Eval('from_location_type', '') == 'storage'),
-                (('type', 'in', ['customer', 'supplier']),),
-                (('type', '=', 'storage'),)
-                ),
+                If((Eval('from_location_type', '') == 'storage'),
+                    (('type', 'in', ['customer', 'supplier']),),
+                    (('type', '=', 'storage'),)),
             ], depends=['from_location_type'])
     moves = fields.One2Many('stock.move', 'shipment', 'Moves',
         states={
@@ -93,12 +92,12 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         depends=['state', 'from_location', 'to_location', 'planned_date',
             'company'])
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('cancel', 'Canceled'),
-        ('assigned', 'Assigned'),
-        ('waiting', 'Waiting'),
-        ('done', 'Done'),
-        ], 'State', readonly=True)
+            ('draft', 'Draft'),
+            ('cancel', 'Canceled'),
+            ('assigned', 'Assigned'),
+            ('waiting', 'Waiting'),
+            ('done', 'Done'),
+            ], 'State', readonly=True)
 
     @classmethod
     def __setup__(cls):
@@ -265,7 +264,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button_action(
-        'stock_external_shipment.wizard_shipment_external_assign')
+        'stock_external.wizard_shipment_external_assign')
     def assign_wizard(cls, shipments):
         pass
 
@@ -314,7 +313,7 @@ class AssignShipmentExternal(Wizard):
     __name__ = 'stock.shipment.external.assign'
     start = StateTransition()
     failed = StateView('stock.shipment.external.assign.failed',
-        'stock_external_shipment.shipment_external_assign_failed_view_form',
+        'stock_external.shipment_external_assign_failed_view_form',
         [
             Button('Force Assign', 'force', 'tryton-go-next',
                 states={
