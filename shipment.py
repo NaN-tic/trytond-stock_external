@@ -349,3 +349,15 @@ class Move:
         models = super(Move, cls)._get_shipment()
         models.append('stock.shipment.external')
         return models
+
+    @classmethod
+    def check_origin(cls, moves, types=None):
+        'Do not check moves related to an external shipment'
+        pool = Pool()
+        ExternalShipment = pool.get('stock.shipment.external')
+        moves_to_check = []
+        for move in moves:
+            if move.shipment and isinstance(move.shipment, ExternalShipment):
+                continue
+            moves_to_check.append(move)
+        super(Move, cls).check_origin(moves_to_check, types)
