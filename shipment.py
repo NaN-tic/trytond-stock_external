@@ -167,10 +167,9 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
 
     @fields.depends('party')
     def on_change_party(self):
-        address = None
+        self.address = None
         if self.party:
-            address = self.party.address_get(type='delivery')
-        return {'address': address.id if address else None}
+            self.address = self.party.address_get(type='delivery')
 
     @fields.depends('from_location')
     def on_change_with_from_location_type(self, name=None):
