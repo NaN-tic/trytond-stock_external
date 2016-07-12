@@ -1,52 +1,41 @@
-#!/usr/bin/env python
-# The COPYRIGHT file at the top level of this repository contains the full
-# copyright notices and license terms.
+# This file is part of Tryton.  The COPYRIGHT file at the top level of
+# this repository contains the full copyright notices and license terms.
 import unittest
 import doctest
+
 import trytond.tests.test_tryton
-from trytond.tests.test_tryton import test_view, test_depends
+from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.tests.test_tryton import doctest_setup, doctest_teardown
-from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT
-from trytond.transaction import Transaction
+from trytond.pool import Pool
+
+from trytond.modules.company.tests import create_company, set_company
 
 
-class TestCase(unittest.TestCase):
+class TestCase(ModuleTestCase):
     'Test module'
+    module = 'analytic_account'
+    module = 'stock_external'
 
-    def setUp(self):
-        trytond.tests.test_tryton.install_module('stock_external')
-        self.category = POOL.get('product.category')
-        self.company = POOL.get('company.company')
-        self.location = POOL.get('stock.location')
-        self.shipment = POOL.get('stock.shipment.external')
-        self.party = POOL.get('party.party')
-        self.user = POOL.get('res.user')
-
-    def test0005views(self):
-        'Test views'
-        test_view('stock_external')
-
-    def test0006depends(self):
-        'Test depends'
-        test_depends()
-
+    @with_transaction()
     def test0010locations(self):
         'Test locations'
-        with Transaction().start(DB_NAME, USER, context=CONTEXT):
-            supplier, = self.location.search([('code', '=', 'SUP')])
-            customer, = self.location.search([('code', '=', 'CUS')])
-            storage, = self.location.search([('code', '=', 'STO')])
-            company, = self.company.search([
-                    ('rec_name', '=', 'Dunder Mifflin'),
-                    ])
-            self.user.write([self.user(USER)], {
-                'main_company': company.id,
-                'company': company.id,
-                })
-            party, = self.party.create([{
+        pool = Pool()
+        Location = pool.get('stock.location')
+        Shipment = pool.get('stock.shipment.external')
+        Party = pool.get('party.party')
+
+        # Create Company
+        party = Party(name='Party')
+        party.save()
+        company = create_company()
+        with set_company(company):
+            supplier, = Location.search([('code', '=', 'SUP')])
+            customer, = Location.search([('code', '=', 'CUS')])
+            storage, = Location.search([('code', '=', 'STO')])
+            party, = Party.create([{
                         'name': 'Customer',
                         }])
-            self.shipment.create([{
+            Shipment.create([{
                         'company': company.id,
                         'party': party.id,
                         'from_location': supplier.id,
@@ -57,7 +46,7 @@ class TestCase(unittest.TestCase):
                     (supplier, customer),
                     (storage, storage),
                     ]:
-                self.assertRaises(Exception, self.shipment.create, [{
+                self.assertRaises(Exception, Shipment.create, [{
                             'company': company.id,
                             'party': party.id,
                             'from_location': from_.id,
@@ -67,10 +56,6 @@ class TestCase(unittest.TestCase):
 
 def suite():
     suite = trytond.tests.test_tryton.suite()
-    from trytond.modules.company.tests import test_company
-    for test in test_company.suite():
-        if test not in suite:
-            suite.addTest(test)
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestCase))
     suite.addTests(doctest.DocFileSuite(
             'scenario_stock_external_shipment.rst',
