@@ -76,6 +76,13 @@
             <field name="model"
                 search="[('model', '=', 'stock.shipment.external')]"/>
         </record>
+
+        <record model="ir.model.button" id="shipment_external_assign_wizard_button">
+            <field name="name">assign_wizard</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.external')]"/>
+        </record>
+
         <record model="ir.model.button-res.group"
             id="shipment_external_assign_force_button_stock_group_stock_force_assignment">
             <field name="button" ref="shipment_external_assign_force_button"/>
@@ -211,11 +218,5 @@
                 <field name="code">stock.shipment.external</field>
         </record>
 
-        <!-- ir.property -->
-        <record model="ir.property" id="property_shipment_external_sequence">
-            <field name="field"
-                search="[('model.model', '=', 'stock.configuration'), ('name', '=', 'shipment_external_sequence')]"/>
-            <field name="value" eval="'ir.sequence,' + str(ref('sequence_shipment_external'))"/>
-        </record>
     </data>
 </tryton>

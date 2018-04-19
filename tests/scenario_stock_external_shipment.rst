@@ -12,6 +12,9 @@ Imports::
     >>> from dateutil.relativedelta import relativedelta
     >>> from decimal import Decimal
     >>> from proteus import config, Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
+    >>> from trytond.modules.company.tests.tools import create_company, \
+    ...     get_company
     >>> today = datetime.date.today()
     >>> yesterday = today - relativedelta(days=1)
 
@@ -22,36 +25,12 @@ Create database::
 
 Install stock Module::
 
-    >>> Module = Model.get('ir.module')
-    >>> modules = Module.find([('name', '=', 'stock_external')])
-    >>> Module.install([x.id for x in modules], config.context)
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules('stock_external')
 
 Create company::
 
-    >>> Currency = Model.get('currency.currency')
-    >>> CurrencyRate = Model.get('currency.currency.rate')
-    >>> Company = Model.get('company.company')
-    >>> Party = Model.get('party.party')
-    >>> company_config = Wizard('company.company.config')
-    >>> company_config.execute('company')
-    >>> company = company_config.form
-    >>> party = Party(name='OPENLABS')
-    >>> party.save()
-    >>> company.party = party
-    >>> currencies = Currency.find([('code', '=', 'EUR')])
-    >>> if not currencies:
-    ...     currency = Currency(name='Euro', symbol=u'€', code='EUR',
-    ...         rounding=Decimal('0.01'), mon_grouping='[3, 3, 0]',
-    ...         mon_decimal_point=',')
-    ...     currency.save()
-    ...     CurrencyRate(date=today + relativedelta(month=1, day=1),
-    ...         rate=Decimal('1.0'), currency=currency).save()
-    ... else:
-    ...     currency, = currencies
-    >>> company.currency = currency
-    >>> company_config.execute('add')
-    >>> company, = Company.find()
+    >>> _ = create_company()
+    >>> company = get_company()
 
 Reload the context::
 
@@ -100,7 +79,8 @@ Recieve products from customer::
     >>> ShipmentExternal = Model.get('stock.shipment.external')
     >>> StockMove = Model.get('stock.move')
     >>> shipment = ShipmentExternal()
-    >>> shipment.planned_date = today
+    >>> shipment.planned_date = yesterday
+    >>> shipment.effective_date = yesterday
     >>> shipment.party = customer
     >>> shipment.from_location = customer_loc
     >>> shipment.to_location = storage_loc
@@ -114,7 +94,6 @@ Recieve products from customer::
     >>> move.to_location = storage_loc
     >>> move.company = company
     >>> move.unit_price = Decimal('1')
-    >>> move.currency = currency
     >>> shipment.save()
     >>> ShipmentExternal.wait([shipment.id], config.context)
     >>> ShipmentExternal.assign_try([shipment.id], config.context)
@@ -131,8 +110,7 @@ Recieve products from customer::
     u'done'
     >>> config._context['locations'] = [storage_loc.id]
     >>> product.reload()
-    >>> product.quantity == 1
-    True
+
 
 Try to send 2 products to customer::
 
@@ -151,7 +129,6 @@ Try to send 2 products to customer::
     >>> move.to_location = customer_loc
     >>> move.company = company
     >>> move.unit_price = Decimal('1')
-    >>> move.currency = currency
     >>> shipment.save()
     >>> ShipmentExternal.wait([shipment.id], config.context)
     >>> ShipmentExternal.assign_try([shipment.id], config.context)

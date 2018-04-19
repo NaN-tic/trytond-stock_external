@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- The COPYRIGHT file at the top level of this repository contains the full
       copyright notices and license terms. -->
-<form string="External Shipment" col="4" cursor="party">
+<form col="4" cursor="party">
     <label name="reference"/>
     <field name="reference"/>
     <label name="code"/>

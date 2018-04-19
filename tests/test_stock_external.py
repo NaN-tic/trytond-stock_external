@@ -12,8 +12,7 @@ from trytond.modules.company.tests import create_company, set_company
 
 
 class TestCase(ModuleTestCase):
-    'Test module'
-    module = 'analytic_account'
+    'Stock External module'
     module = 'stock_external'
 
     @with_transaction()

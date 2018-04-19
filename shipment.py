@@ -6,19 +6,42 @@ from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 
+
 __all__ = ['Configuration', 'ShipmentExternal', 'Move',
-    'AssignShipmentExternalAssignFailed', 'AssignShipmentExternal']
-__metaclass__ = PoolMeta
+    'AssignShipmentExternalAssignFailed', 'AssignShipmentExternal',
+    'ConfigurationSequence']
 
 
 class Configuration:
     __name__ = 'stock.configuration'
-    shipment_external_sequence = fields.Property(fields.Many2One('ir.sequence',
+    __metaclass__ = PoolMeta
+
+    shipment_external_sequence = fields.MultiValue(
+        fields.Many2One('ir.sequence',
             'External Shipment Sequence', domain=[
                 ('company', 'in',
                     [Eval('context', {}).get('company', -1), None]),
                 ('code', '=', 'stock.shipment.external'),
                 ], required=True))
+
+    @classmethod
+    def multivalue_model(cls, field):
+        pool = Pool()
+        if field in ['shipment_external_sequence']:
+            return pool.get('stock.configuration.shipment_external_sequence')
+        return super(Configuration, cls).multivalue_model(field)
+
+
+class ConfigurationSequence:
+    __name__ = 'stock.configuration.sequence'
+    __metaclass__ = PoolMeta
+
+    shipment_external_sequence = fields.Many2One('ir.sequence',
+            'External Shipment Sequence', domain=[
+                ('company', 'in',
+                    [Eval('context', {}).get('company', -1), None]),
+                ('code', '=', 'stock.shipment.external'),
+                ], required=True)
 
 
 class ShipmentExternal(Workflow, ModelSQL, ModelView):
@@ -201,7 +224,8 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         config = Config(1)
         for values in vlist:
             values['code'] = Sequence.get_id(
-                    config.shipment_external_sequence.id)
+                config.shipment_external_sequence and
+                config.shipment_external_sequence.id)
         return super(ShipmentExternal, cls).create(vlist)
 
     @classmethod
@@ -342,6 +366,7 @@ class AssignShipmentExternal(Wizard):
 
 class Move:
     __name__ = 'stock.move'
+    __metaclass__ = PoolMeta
 
     @classmethod
     def _get_shipment(cls):
