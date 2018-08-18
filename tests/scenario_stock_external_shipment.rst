@@ -92,14 +92,14 @@ Recieve products from customer::
     True
     >>> move, = shipment.moves
     >>> move.state
-    u'assigned'
+    'assigned'
     >>> ShipmentExternal.done([shipment.id], config.context)
     >>> shipment.reload()
     >>> shipment.state
-    u'done'
+    'done'
     >>> move, = shipment.moves
     >>> move.state
-    u'done'
+    'done'
     >>> config._context['locations'] = [storage_loc.id]
     >>> product.reload()
 
@@ -137,14 +137,14 @@ Delete draft move and only available product::
     True
     >>> move, = shipment.moves
     >>> move.state
-    u'assigned'
+    'assigned'
     >>> ShipmentExternal.done([shipment.id], config.context)
     >>> shipment.reload()
     >>> shipment.state
-    u'done'
+    'done'
     >>> move, = shipment.moves
     >>> move.state
-    u'done'
+    'done'
     >>> config._context['locations'] = [storage_loc.id]
     >>> product.reload()
     >>> product.quantity == 0

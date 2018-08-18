@@ -12,9 +12,8 @@ __all__ = ['Configuration', 'ShipmentExternal', 'Move',
     'ConfigurationSequence']
 
 
-class Configuration:
+class Configuration(metaclass=PoolMeta):
     __name__ = 'stock.configuration'
-    __metaclass__ = PoolMeta
 
     shipment_external_sequence = fields.MultiValue(
         fields.Many2One('ir.sequence',
@@ -32,9 +31,8 @@ class Configuration:
         return super(Configuration, cls).multivalue_model(field)
 
 
-class ConfigurationSequence:
+class ConfigurationSequence(metaclass=PoolMeta):
     __name__ = 'stock.configuration.sequence'
-    __metaclass__ = PoolMeta
 
     shipment_external_sequence = fields.Many2One('ir.sequence',
             'External Shipment Sequence', domain=[
@@ -364,9 +362,8 @@ class AssignShipmentExternal(Wizard):
         return 'end'
 
 
-class Move:
+class Move(metaclass=PoolMeta):
     __name__ = 'stock.move'
-    __metaclass__ = PoolMeta
 
     @classmethod
     def _get_shipment(cls):
