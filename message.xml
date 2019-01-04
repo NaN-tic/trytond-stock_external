@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
+this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data group="1">
+        <record model="ir.message" id="delete_cancel">
+            <field name="text">External Shipment "%(shipment)s" must be cancelled before deletion.</field>
+        </record>
+        <record model="ir.message" id="same_from_to_type">
+            <field name="text">The locations types of shipment "%(shipment)s" can not be the same.</field>
+        </record>
+        <record model="ir.message" id="internal_shipments">
+            <field name="text">All locations of shipment "%(shipment)s" are from type storage. Use internal shimpents to track internal movements.</field>
+        </record>
+        <record model="ir.message" id="one_storage_location">
+            <field name="text">At least one of the the locations of shipment "%(shipment)s" must be of storage type.</field>
+        </record>    
+      </data>
+</tryton>

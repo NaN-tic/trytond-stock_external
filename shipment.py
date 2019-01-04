@@ -5,6 +5,8 @@ from trytond.pyson import Eval, If, In, Or, Not, Equal, Bool, Id
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
+from trytond.i18n import gettext
+from trytond.exceptions import UserWarning
 
 
 __all__ = ['Configuration', 'ShipmentExternal', 'Move',
@@ -124,17 +126,6 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
     def __setup__(cls):
         super(ShipmentExternal, cls).__setup__()
         cls._order[0] = ('id', 'DESC')
-        cls._error_messages.update({
-                'delete_cancel': ('External Shipment "%s" must be cancelled '
-                    'before deletion.'),
-                'same_from_to_type': ('The locations types of shipment "%s"'
-                    ' can not be the same.'),
-                'internal_shipments': ('All locations of shipment "%s" are '
-                    'from type storage. Use internal shimpents to track '
-                    'internal movements.'),
-                'one_storage_location': ('At least one of the the locations '
-                    'of shipment "%s" must be of storage type.'),
-                })
         cls._transitions |= set((
                 ('draft', 'waiting'),
                 ('waiting', 'waiting'),
@@ -206,11 +197,17 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         from_type = self.from_location.type
         to_type = self.to_location.type
         if from_type == 'storage' and to_type == 'storage':
-            self.raise_user_error('internal_shipments', self.rec_name)
+            raise UserWarning('internal_shipments',
+                gettext('stock_external.internal_shipments',
+                    shipment=self.rec_name))
         if from_type == to_type:
-            self.raise_user_error('same_from_to_type', self.rec_name)
+            raise UserWarning('same_from_to_type',
+                gettext('stock_external.same_from_to_type',
+                    shipment=self.rec_name))
         if from_type != 'storage' and to_type != 'storage':
-            self.raise_user_error('one_storage_required', self.rec_name)
+            raise UserWarning('one_storage_required',
+                gettext('stock_external.one_storage_required',
+                    shipment=self.rec_name))
 
     @classmethod
     def create(cls, vlist):
@@ -233,7 +230,8 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         cls.cancel(shipments)
         for shipment in shipments:
             if shipment.state != 'cancel':
-                cls.raise_user_error('delete_cancel', shipment.rec_name)
+                raise UserWarning('delete_cancel', gettext(
+                    'stock_external.delete_cancel', shipment=shipment.rec_name))
         Move.delete([m for s in shipments for m in s.moves])
         super(ShipmentExternal, cls).delete(shipments)
 
