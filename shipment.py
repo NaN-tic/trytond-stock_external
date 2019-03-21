@@ -28,7 +28,7 @@ class Configuration:
     def multivalue_model(cls, field):
         pool = Pool()
         if field in ['shipment_external_sequence']:
-            return pool.get('stock.configuration.shipment_external_sequence')
+            return pool.get('stock.configuration.sequence')
         return super(Configuration, cls).multivalue_model(field)
 
 
