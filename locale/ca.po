@@ -1,32 +1,12 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:stock.shipment.external:"
-msgid ""
-"All locations of shipment \"%s\" are from type storage. Use internal "
-"shimpents to track internal movements."
-msgstr ""
-"La ubicació origen i destí de l'albará \"%s\" són de tipus intern. Feu "
-"servir els albarans interns per movimients entre ubicacions internes."
-
-msgctxt "error:stock.shipment.external:"
-msgid ""
-"At least one of the the locations of shipment \"%s\" must be of storage "
-"type."
-msgstr "Alguna de les ubicacions de l'albarà \"%s\" ha de ser de tipus intern."
-
-msgctxt "error:stock.shipment.external:"
-msgid "External Shipment \"%s\" must be cancelled before deletion."
-msgstr "Heu de cancel·lar l'albarà extern \"%s\" abans de poder-lo eliminar."
-
-msgctxt "error:stock.shipment.external:"
-msgid "The locations types of shipment \"%s\" can not be the same."
-msgstr ""
-"Les ubicacions origen i destí de l'albarà extern \"%s\" no poden ser del "
-"mateix tipus."
-
 msgctxt "field:stock.configuration,shipment_external_sequence:"
+msgid "External Shipment Sequence"
+msgstr "Secuencia albarans externs"
+
+msgctxt "field:stock.configuration.sequence,shipment_external_sequence:"
 msgid "External Shipment Sequence"
 msgstr "Secuencia albarans externs"
 
@@ -58,9 +38,13 @@ msgctxt "field:stock.shipment.external,from_location:"
 msgid "From Location"
 msgstr "D'ubicació"
 
+msgctxt "field:stock.shipment.external,from_location_type:"
+msgid "From Location Type"
+msgstr "D'ubicació tipus"
+
 msgctxt "field:stock.shipment.external,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:stock.shipment.external,moves:"
 msgid "Moves"
@@ -75,7 +59,7 @@ msgid "Planned Date"
 msgstr "Data estimada"
 
 msgctxt "field:stock.shipment.external,rec_name:"
-msgid "Name"
+msgid "Record Name"
 msgstr "Nom"
 
 msgctxt "field:stock.shipment.external,reference:"
@@ -92,15 +76,15 @@ msgstr "A la ubicació"
 
 msgctxt "field:stock.shipment.external,write_date:"
 msgid "Write Date"
-msgstr "Data modificació"
+msgstr "Data de modificació"
 
 msgctxt "field:stock.shipment.external,write_uid:"
 msgid "Write User"
-msgstr "Usuari modificació"
+msgstr "Usuari de modificació"
 
 msgctxt "field:stock.shipment.external.assign.failed,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:stock.shipment.external.assign.failed,moves:"
 msgid "Moves"
@@ -133,6 +117,35 @@ msgctxt ""
 "model:ir.action.act_window.domain,name:act_shipment_external_form_domain_waiting"
 msgid "Waiting"
 msgstr "Esperant"
+
+msgctxt "model:ir.message,text:delete_cancel"
+msgid "External Shipment \"%(shipment)s\" must be cancelled before deletion."
+msgstr "L’albarà extern \"%(shipment)s\" s’ha de cancel·lar abans de eliminar-lo."
+
+msgctxt "model:ir.message,text:internal_shipments"
+msgid ""
+"All locations of shipment \"%(shipment)s\" are from type storage. Use "
+"internal shimpents to track internal movements."
+msgstr ""
+"Totes les ubicacions de l’enviament \"%(shipment)s\" són de tipus "
+"emmagatzematge. Utilitzeu els albarans interns per fer un seguiment dels "
+"moviments interns."
+
+msgctxt "model:ir.message,text:one_storage_location"
+msgid ""
+"At least one of the the locations of shipment \"%(shipment)s\" must be of "
+"storage type."
+msgstr ""
+"Almenys una de les ubicacions d'enviament \"%(shipment)s\" ha de ser de "
+"tipus emmagatzematge."
+
+msgctxt "model:ir.message,text:same_from_to_type"
+msgid "The locations types of shipment \"%(shipment)s\" can not be the same."
+msgstr "Els tipus d'ubicacions d'enviament \"%(shipment)s\" no poden ser iguals."
+
+msgctxt "model:ir.rule.group,name:rule_group_shipment_external"
+msgid "Stock External"
+msgstr "Stock extern"
 
 msgctxt "model:ir.sequence,name:sequence_shipment_external"
 msgid "External Shipment"

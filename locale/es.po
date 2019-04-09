@@ -1,32 +1,12 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:stock.shipment.external:"
-msgid ""
-"All locations of shipment \"%s\" are from type storage. Use internal "
-"shimpents to track internal movements."
-msgstr ""
-"Todas las ubicaciones del albarán \"%s\" són de tipo interna. Utilize los "
-"albaranes internos para realizar movimientos internos."
-
-msgctxt "error:stock.shipment.external:"
-msgid ""
-"At least one of the the locations of shipment \"%s\" must be of storage "
-"type."
-msgstr "Alguna de las ubicaciones del albarán \"%s\" debe ser de tipo Interna."
-
-msgctxt "error:stock.shipment.external:"
-msgid "External Shipment \"%s\" must be cancelled before deletion."
-msgstr "El albarán externo \"%s\" se debe cancelar antes de ser eliminado."
-
-msgctxt "error:stock.shipment.external:"
-msgid "The locations types of shipment \"%s\" can not be the same."
-msgstr ""
-"Los tipos de las ubicaciones origen y destino del albarán \"%s\" no pueden "
-"ser iguales."
-
 msgctxt "field:stock.configuration,shipment_external_sequence:"
+msgid "External Shipment Sequence"
+msgstr "Sequencia Albaranes externos"
+
+msgctxt "field:stock.configuration.sequence,shipment_external_sequence:"
 msgid "External Shipment Sequence"
 msgstr "Sequencia Albaranes externos"
 
@@ -58,9 +38,13 @@ msgctxt "field:stock.shipment.external,from_location:"
 msgid "From Location"
 msgstr "Desde ubicación"
 
+msgctxt "field:stock.shipment.external,from_location_type:"
+msgid "From Location Type"
+msgstr "Desde ubicación tipo"
+
 msgctxt "field:stock.shipment.external,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:stock.shipment.external,moves:"
 msgid "Moves"
@@ -75,7 +59,7 @@ msgid "Planned Date"
 msgstr "Fecha estimada"
 
 msgctxt "field:stock.shipment.external,rec_name:"
-msgid "Name"
+msgid "Record Name"
 msgstr "Nombre"
 
 msgctxt "field:stock.shipment.external,reference:"
@@ -92,15 +76,15 @@ msgstr "A ubicación"
 
 msgctxt "field:stock.shipment.external,write_date:"
 msgid "Write Date"
-msgstr "Fecha modificación"
+msgstr "Fecha de modificación"
 
 msgctxt "field:stock.shipment.external,write_uid:"
 msgid "Write User"
-msgstr "Usuario modificación"
+msgstr "Usuario de modificación"
 
 msgctxt "field:stock.shipment.external.assign.failed,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:stock.shipment.external.assign.failed,moves:"
 msgid "Moves"
@@ -133,6 +117,34 @@ msgctxt ""
 "model:ir.action.act_window.domain,name:act_shipment_external_form_domain_waiting"
 msgid "Waiting"
 msgstr "En espera"
+
+msgctxt "model:ir.message,text:delete_cancel"
+msgid "External Shipment \"%(shipment)s\" must be cancelled before deletion."
+msgstr "El albarán externo \"%(shipment)s\" se debe cancelar antes de eliminarlo."
+
+msgctxt "model:ir.message,text:internal_shipments"
+msgid ""
+"All locations of shipment \"%(shipment)s\" are from type storage. Use "
+"internal shimpents to track internal movements."
+msgstr ""
+"Todas las ubicaciones de envío \"%(shipment)s\" son de tipo almacenamiento. "
+"Usa los albaranes internos para el seguimiento de los movimientos internos."
+
+msgctxt "model:ir.message,text:one_storage_location"
+msgid ""
+"At least one of the the locations of shipment \"%(shipment)s\" must be of "
+"storage type."
+msgstr ""
+"Al menos una de las ubicaciones de envío \"%(shipment)s\" debe ser de tipo "
+"almacenamiento."
+
+msgctxt "model:ir.message,text:same_from_to_type"
+msgid "The locations types of shipment \"%(shipment)s\" can not be the same."
+msgstr "Los tipos de ubicaciones de envío \"%(shipment)s\" no pueden ser iguales."
+
+msgctxt "model:ir.rule.group,name:rule_group_shipment_external"
+msgid "Stock External"
+msgstr "Stock externo"
 
 msgctxt "model:ir.sequence,name:sequence_shipment_external"
 msgid "External Shipment"
