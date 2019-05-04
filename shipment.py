@@ -194,18 +194,25 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             shipment.check_locations()
 
     def check_locations(self):
+        Warning = Pool().get('res.user.warning')
+
         from_type = self.from_location.type
         to_type = self.to_location.type
-        if from_type == 'storage' and to_type == 'storage':
-            raise UserWarning('internal_shipments',
+        key = 'internal_shipments_%s' % self.id
+        if (from_type == 'storage' and to_type == 'storage' and
+                Warning.check(key)):
+            raise UserWarning(key,
                 gettext('stock_external.internal_shipments',
                     shipment=self.rec_name))
-        if from_type == to_type:
-            raise UserWarning('same_from_to_type',
+        key = 'same_from_to_type_%s' % self.id
+        if from_type == to_type and Warning.check(key):
+            raise UserWarning(key,
                 gettext('stock_external.same_from_to_type',
                     shipment=self.rec_name))
-        if from_type != 'storage' and to_type != 'storage':
-            raise UserWarning('one_storage_required',
+        key = 'one_storage_required_%s' % self.id
+        if (from_type != 'storage' and to_type != 'storage' and
+                Warning.check(key)):
+            raise UserWarning(key,
                 gettext('stock_external.one_storage_required',
                     shipment=self.rec_name))
 
@@ -225,12 +232,15 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
 
     @classmethod
     def delete(cls, shipments):
-        Move = Pool().get('stock.move')
+        pool = Pool()
+        Move = pol.get('stock.move')
+        Warning = pool.get('res.user.warning')
         # Cancel before delete
         cls.cancel(shipments)
         for shipment in shipments:
-            if shipment.state != 'cancel':
-                raise UserWarning('delete_cancel', gettext(
+            key = 'delete_cancel_%s' % shipment.id
+            if shipment.state != 'cancel' and Warning.check(key):
+                raise UserWarning(key, gettext(
                     'stock_external.delete_cancel', shipment=shipment.rec_name))
         Move.delete([m for s in shipments for m in s.moves])
         super(ShipmentExternal, cls).delete(shipments)
