@@ -4,6 +4,5 @@
 <form col="2">
     <image name="tryton-dialog-warning" xexpand="0" xfill="0"/>
     <separator string="Unable to assign those products:" id="unable"/>
-    <field name="moves" colspan="2"
-        view_ids="stock.move_view_tree_simple"/>
+    <field name="moves" colspan="2" view_ids="stock.move_view_tree_simple"/>
 </form>
