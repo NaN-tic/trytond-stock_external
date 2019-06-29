@@ -2,6 +2,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
+msgctxt "field:stock.configuration,rec_name:"
+msgid "Record Name"
+msgstr "Nom registre"
+
 msgctxt "field:stock.configuration,shipment_external_sequence:"
 msgid "External Shipment Sequence"
 msgstr "Secuencia albarans externs"
@@ -9,6 +13,10 @@ msgstr "Secuencia albarans externs"
 msgctxt "field:stock.configuration.sequence,shipment_external_sequence:"
 msgid "External Shipment Sequence"
 msgstr "Secuencia albarans externs"
+
+msgctxt "field:stock.move,rec_name:"
+msgid "Record Name"
+msgstr "Nom registre"
 
 msgctxt "field:stock.shipment.external,address:"
 msgid "Contact Address"
@@ -60,7 +68,7 @@ msgstr "Data estimada"
 
 msgctxt "field:stock.shipment.external,rec_name:"
 msgid "Record Name"
-msgstr "Nom"
+msgstr "Nom registre"
 
 msgctxt "field:stock.shipment.external,reference:"
 msgid "Reference"
@@ -143,13 +151,37 @@ msgctxt "model:ir.message,text:same_from_to_type"
 msgid "The locations types of shipment \"%(shipment)s\" can not be the same."
 msgstr "Els tipus d'ubicacions d'enviament \"%(shipment)s\" no poden ser iguals."
 
+msgctxt "model:ir.model.button,string:shipment_external_assign_force_button"
+msgid "Force Assign"
+msgstr "Forçar reserva"
+
+msgctxt "model:ir.model.button,string:shipment_external_assign_try_button"
+msgid "Assign"
+msgstr "Reserva"
+
+msgctxt "model:ir.model.button,string:shipment_external_assign_wizard_button"
+msgid "Assign"
+msgstr "Reserva"
+
+msgctxt "model:ir.model.button,string:shipment_external_cancel_button"
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgctxt "model:ir.model.button,string:shipment_external_done_button"
+msgid "Done"
+msgstr "Realitza"
+
+msgctxt "model:ir.model.button,string:shipment_external_draft_button"
+msgid "Draft"
+msgstr "Esborrany"
+
+msgctxt "model:ir.model.button,string:shipment_external_wait_button"
+msgid "Wait"
+msgstr "Espera"
+
 msgctxt "model:ir.rule.group,name:rule_group_shipment_external"
 msgid "Stock External"
-msgstr "Stock extern"
-
-msgctxt "model:ir.sequence,name:sequence_shipment_external"
-msgid "External Shipment"
-msgstr "Albarà extern"
+msgstr "Estoc extern"
 
 msgctxt "model:ir.sequence.type,name:sequence_type_shipment_external"
 msgid "External Shipment"
