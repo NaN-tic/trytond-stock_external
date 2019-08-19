@@ -233,7 +233,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
     @classmethod
     def delete(cls, shipments):
         pool = Pool()
-        Move = pol.get('stock.move')
+        Move = pool.get('stock.move')
         Warning = pool.get('res.user.warning')
         # Cancel before delete
         cls.cancel(shipments)
