@@ -165,6 +165,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
                 'assign_wizard': {
                     'invisible': Eval('state') != 'waiting',
                     'icon': 'tryton-forward',
+                    'icon': 'tryton-forward',
                     },
                 'assign_try': {},
                 'assign_force': {},
