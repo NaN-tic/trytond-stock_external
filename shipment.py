@@ -141,29 +141,32 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         cls._buttons.update({
                 'cancel': {
                     'invisible': Eval('state').in_(['cancel', 'done']),
+                    'icon': 'tryton-cancel',
                     },
                 'draft': {
                     'invisible': ~Eval('state').in_(['cancel', 'waiting']),
                     'icon': If(Eval('state') == 'cancel',
-                        'tryton-clear',
-                        'tryton-go-previous'),
+                        'tryton-undo',
+                        'tryton-back'),
                     },
                 'wait': {
                     'invisible': ~Eval('state').in_(['assigned', 'waiting',
                             'draft']),
                     'icon': If(Eval('state') == 'assigned',
-                        'tryton-go-previous',
+                        'tryton-back',
                         If(Eval('state') == 'waiting',
-                            'tryton-clear',
-                            'tryton-go-next')),
+                            'tryton-undo',
+                            'tryton-forward')),
                     },
                 'done': {
                     'invisible': Eval('state') != 'assigned',
+                    'icon': 'tryton-ok',
                     },
                 'assign_wizard': {
                     'invisible': Eval('state') != 'waiting',
                     'readonly': ~Eval('groups', []).contains(
                         Id('stock', 'group_stock')),
+                    'icon': 'tryton-forward',
                     },
                 'assign_try': {},
                 'assign_force': {},
@@ -344,7 +347,7 @@ class AssignShipmentExternal(Wizard):
     failed = StateView('stock.shipment.external.assign.failed',
         'stock_external.shipment_external_assign_failed_view_form',
         [
-            Button('Force Assign', 'force', 'tryton-go-next',
+            Button('Force Assign', 'force', 'tryton-forward',
                 states={
                     'invisible': ~Id('stock',
                         'group_stock_force_assignment').in_(
