@@ -19,11 +19,12 @@ class Configuration(metaclass=PoolMeta):
 
     shipment_external_sequence = fields.MultiValue(
         fields.Many2One('ir.sequence',
-            'External Shipment Sequence', domain=[
+            'External Shipment Sequence', required=True, 
+            domain=[
                 ('company', 'in',
                     [Eval('context', {}).get('company', -1), None]),
                 ('code', '=', 'stock.shipment.external'),
-                ], required=True))
+                ]))
 
     @classmethod
     def multivalue_model(cls, field):
@@ -32,16 +33,23 @@ class Configuration(metaclass=PoolMeta):
             return pool.get('stock.configuration.sequence')
         return super(Configuration, cls).multivalue_model(field)
 
+    @staticmethod
+    def default_shipment_external_sequence(**pattern):
+        pool = Pool()
+        ModelData = pool.get('ir.model.data')
+        return ModelData.get_id('stock_external', 'sequence_shipment_external')
+
 
 class ConfigurationSequence(metaclass=PoolMeta):
     __name__ = 'stock.configuration.sequence'
 
     shipment_external_sequence = fields.Many2One('ir.sequence',
-            'External Shipment Sequence', domain=[
+            'External Shipment Sequence', required=True,
+            domain=[
                 ('company', 'in',
                     [Eval('context', {}).get('company', -1), None]),
                 ('code', '=', 'stock.shipment.external'),
-                ], required=True)
+                ])
 
 
 class ShipmentExternal(Workflow, ModelSQL, ModelView):
