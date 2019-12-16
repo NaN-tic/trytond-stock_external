@@ -232,7 +232,7 @@ msgstr "Reservar"
 
 msgctxt "view:stock.shipment.external:"
 msgid "Cancel"
-msgstr "Cancel·lar"
+msgstr "Cancelar"
 
 msgctxt "view:stock.shipment.external:"
 msgid "Done"
