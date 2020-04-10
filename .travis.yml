@@ -1,0 +1,12 @@
+language: python
+install:
+    - pip install tox
+script:
+    - tox
+env:
+    matrix:
+        - TOXENV=py36-sqlite
+notifications:
+    email:
+        on_success: change
+        on_failure: always
