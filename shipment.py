@@ -19,7 +19,7 @@ class Configuration(metaclass=PoolMeta):
 
     shipment_external_sequence = fields.MultiValue(
         fields.Many2One('ir.sequence',
-            'External Shipment Sequence', required=True, 
+            'External Shipment Sequence', required=True,
             domain=[
                 ('company', 'in',
                     [Eval('context', {}).get('company', -1), None]),
@@ -58,7 +58,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
     _rec_name = 'code'
     effective_date = fields.Date('Effective Date',
         states={
-            'readonly': Eval('state').in_(['cancel', 'done']),
+            'readonly': Eval('state').in_(['cancelled', 'done']),
             },
         depends=['state'])
     planned_date = fields.Date('Planned Date',
@@ -124,7 +124,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             'company'])
     state = fields.Selection([
             ('draft', 'Draft'),
-            ('cancel', 'Canceled'),
+            ('cancelled', 'Cancelled'),
             ('assigned', 'Assigned'),
             ('waiting', 'Waiting'),
             ('done', 'Done'),
@@ -141,19 +141,19 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
                 ('assigned', 'done'),
                 ('waiting', 'draft'),
                 ('assigned', 'waiting'),
-                ('draft', 'cancel'),
-                ('waiting', 'cancel'),
-                ('assigned', 'cancel'),
-                ('cancel', 'draft'),
+                ('draft', 'cancelled'),
+                ('waiting', 'cancelled'),
+                ('assigned', 'cancelled'),
+                ('cancelled', 'draft'),
                 ))
         cls._buttons.update({
                 'cancel': {
-                    'invisible': Eval('state').in_(['cancel', 'done']),
+                    'invisible': Eval('state').in_(['cancelled', 'done']),
                     'icon': 'tryton-cancel',
                     },
                 'draft': {
-                    'invisible': ~Eval('state').in_(['cancel', 'waiting']),
-                    'icon': If(Eval('state') == 'cancel',
+                    'invisible': ~Eval('state').in_(['cancelled', 'waiting']),
+                    'icon': If(Eval('state') == 'cancelled',
                         'tryton-undo',
                         'tryton-back'),
                     },
@@ -249,7 +249,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         cls.cancel(shipments)
         for shipment in shipments:
             key = 'delete_cancel_%s' % shipment.id
-            if shipment.state != 'cancel' and Warning.check(key):
+            if shipment.state != 'cancelled' and Warning.check(key):
                 raise UserWarning(key, gettext(
                     'stock_external.delete_cancel', shipment=shipment.rec_name))
         Move.delete([m for s in shipments for m in s.moves])
@@ -296,7 +296,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button
-    @Workflow.transition('cancel')
+    @Workflow.transition('cancelled')
     def cancel(cls, shipments):
         Move = Pool().get('stock.move')
         Move.cancel([m for s in shipments for m in s.moves])
