@@ -23,7 +23,8 @@ class Configuration(metaclass=PoolMeta):
             domain=[
                 ('company', 'in',
                     [Eval('context', {}).get('company', -1), None]),
-                ('code', '=', 'stock.shipment.external'),
+                ('sequence_type', '=', Id('stock_external',
+                        'sequence_type_shipment_external')),
                 ]))
 
     @classmethod
@@ -48,7 +49,8 @@ class ConfigurationSequence(metaclass=PoolMeta):
             domain=[
                 ('company', 'in',
                     [Eval('context', {}).get('company', -1), None]),
-                ('code', '=', 'stock.shipment.external'),
+                ('sequence_type', '=', Id('stock_external',
+                        'sequence_type_shipment_external')),
                 ])
 
 
@@ -229,15 +231,12 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
     @classmethod
     def create(cls, vlist):
         pool = Pool()
-        Sequence = pool.get('ir.sequence')
         Config = pool.get('stock.configuration')
 
         vlist = [x.copy() for x in vlist]
         config = Config(1)
         for values in vlist:
-            values['code'] = Sequence.get_id(
-                config.shipment_external_sequence and
-                config.shipment_external_sequence.id)
+            values['code'] = config.shipment_external_sequence.get()
         return super(ShipmentExternal, cls).create(vlist)
 
     @classmethod
