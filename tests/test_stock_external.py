@@ -7,11 +7,11 @@ import trytond.tests.test_tryton
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.tests.test_tryton import doctest_setup, doctest_teardown
 from trytond.pool import Pool
+from trytond.modules.company.tests import (CompanyTestMixin, create_company,
+    set_company)
 
-from trytond.modules.company.tests import create_company, set_company
 
-
-class TestCase(ModuleTestCase):
+class TestCase(CompanyTestMixin, ModuleTestCase):
     'Stock External module'
     module = 'stock_external'
 
