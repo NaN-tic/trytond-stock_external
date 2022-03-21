@@ -83,7 +83,10 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             'readonly': Or(Not(Equal(Eval('state'), 'draft')),
                 Bool(Eval('moves', [0]))),
             },
-        depends=['state'])
+        context={
+            'company': Eval('company'),
+            },
+        depends=['state', 'company'])
     address = fields.Many2One('party.address', 'Contact Address',
         states={
             'readonly': Not(Equal(Eval('state'), 'draft')),
