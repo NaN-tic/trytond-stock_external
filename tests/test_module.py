@@ -1,18 +1,15 @@
+
 # This file is part of Tryton.  The COPYRIGHT file at the top level of
 # this repository contains the full copyright notices and license terms.
-import unittest
-import doctest
 
-import trytond.tests.test_tryton
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
-from trytond.tests.test_tryton import doctest_setup, doctest_teardown
 from trytond.pool import Pool
 from trytond.modules.company.tests import (CompanyTestMixin, create_company,
     set_company)
 
 
-class TestCase(CompanyTestMixin, ModuleTestCase):
-    'Stock External module'
+class StockExternalTestCase(CompanyTestMixin, ModuleTestCase):
+    'Test StockExternal module'
     module = 'stock_external'
 
     @with_transaction()
@@ -53,11 +50,4 @@ class TestCase(CompanyTestMixin, ModuleTestCase):
                             }])
 
 
-def suite():
-    suite = trytond.tests.test_tryton.suite()
-    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestCase))
-    suite.addTests(doctest.DocFileSuite(
-            'scenario_stock_external_shipment.rst',
-            setUp=doctest_setup, tearDown=doctest_teardown, encoding='utf-8',
-            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE))
-    return suite
+del ModuleTestCase
