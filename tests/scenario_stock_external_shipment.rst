@@ -18,12 +18,7 @@ Imports::
     >>> today = datetime.date.today()
     >>> yesterday = today - relativedelta(days=1)
 
-Create database::
-
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
-Install stock Module::
+Activate module::
 
     >>> config = activate_modules('stock_external')
 
