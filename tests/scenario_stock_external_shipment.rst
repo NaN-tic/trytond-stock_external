@@ -81,6 +81,7 @@ Recieve products from customer::
     >>> move.to_location = storage_loc
     >>> move.company = company
     >>> move.unit_price = Decimal('1')
+    >>> move.currency = company.currency
     >>> shipment.save()
     >>> ShipmentExternal.wait([shipment.id], config.context)
     >>> ShipmentExternal.assign_try([shipment.id], config.context)
@@ -116,6 +117,7 @@ Try to send 2 products to customer::
     >>> move.to_location = customer_loc
     >>> move.company = company
     >>> move.unit_price = Decimal('1')
+    >>> move.currency = company.currency
     >>> shipment.save()
     >>> ShipmentExternal.wait([shipment.id], config.context)
     >>> ShipmentExternal.assign_try([shipment.id], config.context)
