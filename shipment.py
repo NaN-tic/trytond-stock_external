@@ -77,7 +77,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
                 Eval('context', {}).get('company', -1)),
             ],
         depends=['state'])
-    code = fields.Char("Code", size=None, select=True, readonly=True)
+    code = fields.Char("Code", size=None, readonly=True)
     party = fields.Many2One('party.party', 'Party', required=True,
         states={
             'readonly': Or(Not(Equal(Eval('state'), 'draft')),
@@ -92,7 +92,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             'readonly': Not(Equal(Eval('state'), 'draft')),
             }, domain=[('party', '=', Eval('party'))],
         depends=['state', 'party'])
-    reference = fields.Char("Reference", size=None, select=True,
+    reference = fields.Char("Reference", size=None,
         states={
             'readonly': Eval('state') != 'draft',
             }, depends=['state'])
