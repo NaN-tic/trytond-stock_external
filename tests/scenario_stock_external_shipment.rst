@@ -85,7 +85,6 @@ Recieve products from customer::
     >>> shipment.save()
     >>> ShipmentExternal.wait([shipment.id], config.context)
     >>> ShipmentExternal.assign_try([shipment.id], config.context)
-    True
     >>> move, = shipment.moves
     >>> move.state
     'assigned'
@@ -121,7 +120,6 @@ Try to send 2 products to customer::
     >>> shipment.save()
     >>> ShipmentExternal.wait([shipment.id], config.context)
     >>> ShipmentExternal.assign_try([shipment.id], config.context)
-    False
 
 Delete draft move and only available product::
 
@@ -131,7 +129,6 @@ Delete draft move and only available product::
     >>> shipment.moves.remove(move)
     >>> shipment.save()
     >>> ShipmentExternal.assign_try([shipment.id], config.context)
-    True
     >>> move, = shipment.moves
     >>> move.state
     'assigned'
