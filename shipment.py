@@ -317,13 +317,8 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         if not to_assign:
             Move.assign([m for s in shipments for m in s.moves])
             cls.assign(shipments)
-            return True
-        if Move.assign_try([m for s in to_assign
-                    for m in s.moves]):
+        if Move.assign_try([m for s in to_assign for m in s.moves]):
             cls.assign(shipments)
-            return True
-        else:
-            return False
 
     @classmethod
     @ModelView.button
