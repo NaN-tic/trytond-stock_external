@@ -19,6 +19,10 @@ class StockExternalTestCase(CompanyTestMixin, ModuleTestCase):
         Location = pool.get('stock.location')
         Shipment = pool.get('stock.shipment.external')
         Party = pool.get('party.party')
+        Move = pool.get('stock.move')
+
+        # moves has stock_external context
+        self.assertEqual(Shipment.moves.context.get('stock_external'), True)
 
         # Create Company
         party = Party(name='Party')
@@ -31,12 +35,18 @@ class StockExternalTestCase(CompanyTestMixin, ModuleTestCase):
             party, = Party.create([{
                         'name': 'Customer',
                         }])
-            Shipment.create([{
+            shipment, = Shipment.create([{
                         'company': company.id,
                         'party': party.id,
                         'from_location': supplier.id,
                         'to_location': storage.id,
                         }])
+
+            # unit_price_required is false when shipment is external
+            move = Move()
+            move.shipment = shipment
+            self.assertEqual(move.unit_price_required, False)
+
             for from_, to in [
                     (supplier, supplier),
                     (supplier, customer),
