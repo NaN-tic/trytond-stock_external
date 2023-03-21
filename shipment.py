@@ -125,6 +125,9 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             ('to_location', '=', Eval('to_location')),
             ('company', '=', Eval('company')),
             ],
+        context={
+            'stock_external': True,
+            },
         depends=['state', 'from_location', 'to_location', 'planned_date',
             'company'])
     state = fields.Selection([
@@ -397,3 +400,16 @@ class Move(metaclass=PoolMeta):
                 continue
             moves_to_check.append(move)
         super(Move, cls).check_origin(moves_to_check, types)
+
+    @fields.depends('from_location', 'to_location')
+    def on_change_with_unit_price_required(self, name=None):
+        External = Pool().get('stock.shipment.external')
+
+        unit_price_required = super(Move, self).on_change_with_unit_price_required(name)
+
+        if Transaction().context.get('stock_external', False) or (
+                hasattr(self, 'shipment') and self.shipment
+                and isinstance(self.shipment, External)):
+            return False
+
+        return unit_price_required
