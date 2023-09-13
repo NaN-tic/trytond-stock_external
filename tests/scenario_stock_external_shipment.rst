@@ -75,7 +75,7 @@ Recieve products from customer::
     >>> move = StockMove()
     >>> shipment.moves.append(move)
     >>> move.product = product
-    >>> move.uom =unit
+    >>> move.unit = unit
     >>> move.quantity = 1
     >>> move.from_location = customer_loc
     >>> move.to_location = storage_loc
@@ -110,7 +110,7 @@ Try to send 2 products to customer::
     >>> move = StockMove()
     >>> shipment.moves.append(move)
     >>> move.product = product
-    >>> move.uom =unit
+    >>> move.unit = unit
     >>> move.quantity = 2
     >>> move.from_location = storage_loc
     >>> move.to_location = customer_loc
