@@ -96,6 +96,11 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         states={
             'readonly': Eval('state') != 'draft',
             }, depends=['state'])
+    warehouse = fields.Function(
+        fields.Many2One(
+            'stock.location', "Warehouse",
+            help="Where the stock is sent from."),
+        'on_change_with_warehouse')
     from_location = fields.Many2One('stock.location', "From Location",
         required=True, states={
             'readonly': Or(Not(Equal(Eval('state'), 'draft')),
@@ -200,6 +205,11 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         self.address = None
         if self.party:
             self.address = self.party.address_get(type='delivery')
+
+    @fields.depends('from_location')
+    def on_change_with_warehouse(self, name=None):
+        if self.from_location and self.from_location.warehouse:
+            return self.from_location.warehouse.id
 
     @fields.depends('from_location')
     def on_change_with_from_location_type(self, name=None):
