@@ -84,7 +84,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
                 Bool(Eval('moves', [0]))),
             },
         context={
-            'company': Eval('company'),
+            'company': Eval('company', -1),
             },
         depends=['state', 'company'])
     address = fields.Many2One('party.address', 'Contact Address',
@@ -128,7 +128,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         domain=[
             ('from_location', '=', Eval('from_location')),
             ('to_location', '=', Eval('to_location')),
-            ('company', '=', Eval('company')),
+            ('company', '=', Eval('company', -1)),
             ],
         context={
             'stock_external': True,
