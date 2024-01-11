@@ -95,7 +95,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
     reference = fields.Char("Reference", size=None,
         states={
             'readonly': Eval('state') != 'draft',
-            }, depends=['state'])
+            })
     warehouse = fields.Function(
         fields.Many2One(
             'stock.location', "Warehouse",
@@ -108,7 +108,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             },
         domain=[
             ('type', 'in', ['storage', 'customer', 'supplier']),
-            ], depends=['state'])
+            ])
     from_location_type = fields.Function(fields.Char('From Location Type'),
         'on_change_with_from_location_type')
     to_location = fields.Many2One('stock.location', "To Location",
@@ -119,7 +119,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
                 If((Eval('from_location_type', '') == 'storage'),
                     (('type', 'in', ['customer', 'supplier']),),
                     (('type', '=', 'storage'),)),
-            ], depends=['from_location_type'])
+            ])
     moves = fields.One2Many('stock.move', 'shipment', 'Moves',
         states={
             'readonly': ((Eval('state') != 'draft')
