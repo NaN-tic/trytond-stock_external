@@ -61,13 +61,11 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
     effective_date = fields.Date('Effective Date',
         states={
             'readonly': Eval('state').in_(['cancelled', 'done']),
-            },
-        depends=['state'])
+            })
     planned_date = fields.Date('Planned Date',
         states={
             'readonly': Eval('state') != 'draft',
-            },
-        depends=['state'])
+            })
     company = fields.Many2One('company.company', 'Company', required=True,
         states={
             'readonly': Eval('state') != 'draft',
@@ -75,8 +73,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         domain=[
             ('id', If(In('company', Eval('context', {})), '=', '!='),
                 Eval('context', {}).get('company', -1)),
-            ],
-        depends=['state'])
+            ])
     code = fields.Char("Code", size=None, readonly=True)
     party = fields.Many2One('party.party', 'Party', required=True,
         states={
@@ -86,12 +83,11 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         context={
             'company': Eval('company', -1),
             },
-        depends=['state', 'company'])
+        depends=['company'])
     address = fields.Many2One('party.address', 'Contact Address',
         states={
             'readonly': Not(Equal(Eval('state'), 'draft')),
-            }, domain=[('party', '=', Eval('party'))],
-        depends=['state', 'party'])
+            }, domain=[('party', '=', Eval('party'))])
     reference = fields.Char("Reference", size=None,
         states={
             'readonly': Eval('state') != 'draft',
@@ -132,9 +128,7 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
             ],
         context={
             'stock_external': True,
-            },
-        depends=['state', 'from_location', 'to_location', 'planned_date',
-            'company'])
+            })
     state = fields.Selection([
             ('draft', 'Draft'),
             ('cancelled', 'Cancelled'),
