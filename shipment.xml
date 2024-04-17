@@ -26,7 +26,7 @@
         <record model="ir.model.button" id="shipment_external_cancel_button">
             <field name="name">cancel</field>
             <field name="string">Cancel</field>
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
         </record>
         <record model="ir.model.button-res.group" id="shipment_external_cancel_button_stock_group_stock">
             <field name="button" ref="shipment_external_cancel_button"/>
@@ -36,7 +36,7 @@
         <record model="ir.model.button" id="shipment_external_draft_button">
             <field name="name">draft</field>
             <field name="string">Draft</field>
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
         </record>
         <record model="ir.model.button-res.group" id="shipment_external_draft_button_stock_group_stock">
             <field name="button" ref="shipment_external_draft_button"/>
@@ -46,7 +46,7 @@
         <record model="ir.model.button" id="shipment_external_wait_button">
             <field name="name">wait</field>
             <field name="string">Wait</field>
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
         </record>
         <record model="ir.model.button-res.group" id="shipment_external_wait_button_stock_group_stock">
             <field name="button" ref="shipment_external_wait_button"/>
@@ -56,7 +56,7 @@
         <record model="ir.model.button" id="shipment_external_done_button">
             <field name="name">done</field>
             <field name="string">Done</field>
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
         </record>
         <record model="ir.model.button-res.group" id="shipment_external_done_button_stock_group_stock">
             <field name="button" ref="shipment_external_done_button"/>
@@ -66,7 +66,7 @@
         <record model="ir.model.button" id="shipment_external_assign_try_button">
             <field name="name">assign_try</field>
             <field name="string">Assign</field>
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
         </record>
         <record model="ir.model.button-res.group" id="shipment_external_assign_try_button_stock_group_stock">
             <field name="button" ref="shipment_external_assign_try_button"/>
@@ -76,7 +76,7 @@
         <record model="ir.model.button" id="shipment_external_assign_force_button">
             <field name="name">assign_force</field>
             <field name="string">Force Assign</field>
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
         </record>
         <record model="ir.model.button-res.group" id="shipment_external_assign_force_button_stock_group_stock_force_assignment">
             <field name="button" ref="shipment_external_assign_force_button"/>
@@ -86,7 +86,7 @@
         <record model="ir.model.button" id="shipment_external_assign_wizard_button">
             <field name="name">assign_wizard</field>
             <field name="string">Assign</field>
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
         </record>
         <record model="ir.model.button-res.group" id="shipment_external_assign_wizard_button_stock_group_stock">
             <field name="button" ref="shipment_external_assign_wizard_button"/>
@@ -139,7 +139,7 @@
         <menuitem id="menu_shipment_external_form" action="act_shipment_external_form" parent="stock.menu_stock" sequence="38"/>
 
         <record model="ir.model.access" id="access_shipment_external">
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
             <field name="perm_read" eval="False"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
@@ -147,7 +147,7 @@
         </record>
 
         <record model="ir.model.access" id="access_shipment_external_stock_group_stock">
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
             <field name="group" ref="stock.group_stock"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
@@ -156,7 +156,7 @@
         </record>
 
         <record model="ir.model.access" id="access_shipment_external_stock_group_stock_admin">
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
             <field name="group" ref="stock.group_stock_admin"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
@@ -166,7 +166,7 @@
 
         <record model="ir.rule.group" id="rule_group_shipment_external">
             <field name="name">Stock External</field>
-            <field name="model" search="[('model', '=', 'stock.shipment.external')]"/>
+            <field name="model">stock.shipment.external</field>
             <field name="global_p" eval="True"/>
         </record>
         <record model="ir.rule" id="rule_shipment_external">
