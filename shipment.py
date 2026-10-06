@@ -1,7 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 from trytond.model import Workflow, ModelSQL, ModelView, fields
-from trytond.pyson import Eval, If, In, Or, Not, Equal, Bool, Id
+from trytond.pyson import Bool, Equal, Eval, Id, If, In, Not
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
@@ -77,8 +77,8 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
     code = fields.Char("Code", size=None, readonly=True)
     party = fields.Many2One('party.party', 'Party', required=True,
         states={
-            'readonly': Or(Not(Equal(Eval('state'), 'draft')),
-                Bool(Eval('moves', [0]))),
+            'readonly': Not(Equal(Eval('state'), 'draft')),
+            'editable': Not(Bool(Eval('moves', [0]))),
             },
         context={
             'company': Eval('company', -1),
@@ -99,8 +99,8 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         'on_change_with_warehouse')
     from_location = fields.Many2One('stock.location', "From Location",
         required=True, states={
-            'readonly': Or(Not(Equal(Eval('state'), 'draft')),
-                Bool(Eval('moves', [0]))),
+            'readonly': Not(Equal(Eval('state'), 'draft')),
+            'editable': Not(Bool(Eval('moves', [0]))),
             },
         domain=[
             ('type', 'in', ['storage', 'customer', 'supplier']),
@@ -109,8 +109,8 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
         'on_change_with_from_location_type')
     to_location = fields.Many2One('stock.location', "To Location",
         required=True, states={
-            'readonly': Or(Not(Equal(Eval('state'), 'draft')),
-                Bool(Eval('moves', [0]))),
+            'readonly': Not(Equal(Eval('state'), 'draft')),
+            'editable': Not(Bool(Eval('moves', [0]))),
             }, domain=[
                 If((Eval('from_location_type', '') == 'storage'),
                     (('type', 'in', ['customer', 'supplier']),),
@@ -239,15 +239,16 @@ class ShipmentExternal(Workflow, ModelSQL, ModelView):
                     shipment=self.rec_name))
 
     @classmethod
-    def create(cls, vlist):
+    def preprocess_values(cls, mode, values):
+        values = super().preprocess_values(mode, values)
+        if mode != 'create':
+            return values
+
         pool = Pool()
         Config = pool.get('stock.configuration')
-
-        vlist = [x.copy() for x in vlist]
         config = Config(1)
-        for values in vlist:
-            values['code'] = config.shipment_external_sequence.get()
-        return super(ShipmentExternal, cls).create(vlist)
+        values['code'] = config.shipment_external_sequence.get()
+        return values
 
     @classmethod
     def delete(cls, shipments):
